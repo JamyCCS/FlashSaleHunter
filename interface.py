@@ -1,19 +1,36 @@
 import tkinter as tk  # Import the tkinter library for GUI
 from tkinter import ttk  # Import the ttk module for themed widgets
+from tkinter import PhotoImage  # Import the PhotoImage module for image handling
+from tkinter import messagebox  # Import the messagebox module for dialog boxes
 import datafinder as d  # Import the datafinder module for data handling
 from PIL import Image, ImageTk  # Import the PIL library for image handling
 
 # Load the CSV file and get unique categories
 data = d.load_csv("sales_data.csv")  # Load the sales data from a CSV file
+
+# Check if data is empty
+if data.empty:  # Check if the data is empty
+    messagebox.showerror("Error", "No data found. Please check the file path.")  # Show an error message 
+    exit()  # Exit the program
+
 unique_categories = d.get_unique_categories(data)  # Get unique categories from the data
 
 # Ensure unique_categories is a list
 if not isinstance(unique_categories, list):  # Check if unique_categories is a list
+    messagebox.warning("Warning","No Unique Categories")
     unique_categories = []  # If not, set it to an empty list
 
 # Create the main window
 root = tk.Tk()  # Create the main window
 root.title("Flash Sale Tracker")  # Set the title of the window
+root.iconphoto(False, PhotoImage(file='amazon_PNG5.png'))
+
+# bg_image = Image.open("bg.jpg")
+# resized_image=bg_image.resize((600,100)) #fill the image to the size of the window
+# final_image= ImageTk.PhotoImage(resized_image)
+# image_label=tk.Label(root,image=final_image)
+# image_label.place(relwidth=1, relheight=1 )  # Place the label to cover the entire window
+
 
 # Create a frame for the dropdown menus
 frame = tk.Frame(root)  # Create a frame to hold the dropdown menus
@@ -79,12 +96,14 @@ def filter_data():
     # Display the filtered data
     output_text.delete(1.0, tk.END)  # Clear the output text box
     if filtered_data.empty:  # Check if the filtered data is empty
+        messagebox.showerror("Error", "No results match your filters.")  # Show an error message 
         output_text.insert(tk.END, "No results match your filters.\n")  # Display a message if no results match
     else:
         # Format headers with bold styling and spacing
         headers = "  ".join([f"{col:^20}" for col in filtered_data.columns])  # Format the headers
         output_text.insert(tk.END, headers + "\n")  # Insert the headers into the text box
         output_text.insert(tk.END, "-" * len(headers) + "\n\n")  # Add a separator and line gap
+        messagebox.showinfo("Done","Result is ready")
 
         # Format each row with equal spacing
         for _, row in filtered_data.iterrows():  # Iterate through the filtered data rows

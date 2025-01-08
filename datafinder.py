@@ -5,7 +5,6 @@ def load_csv(file_path="sales_data.csv"):
     try:
         return pd.read_csv(file_path)  # Try to read the CSV file and return it as a DataFrame
     except FileNotFoundError:
-        print(f"Error: File {file_path} not found.")  # Print an error message if the file is not found
         return pd.DataFrame()  # Return an empty DataFrame if the file is not found
 
 # Function to get unique categories from the DataFrame
@@ -17,7 +16,6 @@ def get_unique_categories(data):
 # Function to filter the DataFrame based on user input
 def filter_dataframe(data, category="All", sort_actual_price="none", sort_discounted_price="none", sort_discount_percentage="none", num_results="10"):
     if data.empty:  # Check if the DataFrame is empty
-        print("No data available.")  # Print a message if no data is available
         return pd.DataFrame()  # Return an empty DataFrame if no data is available
 
     # Filter by category
