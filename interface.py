@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import datafinder as d
+from PIL import Image, ImageTk
 
 # Load the CSV file and get unique categories
 data = d.load_csv("sales_data.csv")
@@ -54,16 +55,17 @@ discount_percentage_menu.grid(row=1, column=4, padx=5)
 num_results_var = tk.StringVar(value="10")
 num_results_label = tk.Label(frame, text="Number of Results:")
 num_results_label.grid(row=2, column=1, padx=5)
-num_results_menu = ttk.Combobox(frame, textvariable=num_results_var, values=["10", "20", "50", "100"])
+num_results_menu = ttk.Combobox(frame, textvariable=num_results_var, values=["All", "10", "20", "50", "100"])
 num_results_menu.grid(row=2, column=2, padx=5)
 
+# Function to filter data based on user input
 # Function to filter data based on user input
 def filter_data():
     category = category_var.get()
     sort_actual_price = actual_price_var.get().lower()
     sort_discounted_price = discounted_price_var.get().lower()
     sort_discount_percentage = discount_percentage_var.get().lower()
-    num_results = int(num_results_var.get())
+    num_results = num_results_var.get()
 
     # Call the updated filter_dataframe function
     filtered_data = d.filter_dataframe(
@@ -80,14 +82,23 @@ def filter_data():
     if filtered_data.empty:
         output_text.insert(tk.END, "No results match your filters.\n")
     else:
-        output_text.insert(tk.END, filtered_data.to_string(index=False))
-        
+        # Format headers with bold styling and spacing
+        headers = "  ".join([f"{col:^20}" for col in filtered_data.columns])
+        output_text.insert(tk.END, headers + "\n")
+        output_text.insert(tk.END, "-" * len(headers) + "\n\n")  # Add a separator and line gap
+
+        # Format each row with equal spacing
+        for _, row in filtered_data.iterrows():
+            row_str = "  ".join([f"{str(value):^20}" for value in row])
+            output_text.insert(tk.END, row_str + "\n")
+
+
 # Button to apply filter
 filter_button = tk.Button(root, text="Apply Filter", command=filter_data)
 filter_button.pack(pady=10)
 
 # Output display
-output_text = tk.Text(root, wrap=tk.WORD, width=100, height=20)
+output_text = tk.Text(root, wrap=tk.WORD, width=110, height=20)
 output_text.pack(pady=10)
 
 root.mainloop()

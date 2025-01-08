@@ -15,7 +15,7 @@ def get_unique_categories(data):
     return []
 
 # Function to filter the DataFrame based on user input
-def filter_dataframe(data, category="All", sort_actual_price="none", sort_discounted_price="none", sort_discount_percentage="none", num_results=10):
+def filter_dataframe(data, category="All", sort_actual_price="none", sort_discounted_price="none", sort_discount_percentage="none", num_results="10"):	
     if data.empty:
         print("No data available.")
         return pd.DataFrame()
@@ -53,5 +53,8 @@ def filter_dataframe(data, category="All", sort_actual_price="none", sort_discou
     if sort_columns:
         data = data.sort_values(by=sort_columns, ascending=sort_ascending)
 
-    # Return the top 'num_results' rows
-    return data.head(num_results)
+    # Apply the number of results filter
+    if num_results != "All":
+        data = data.head(int(num_results))
+
+    return data
